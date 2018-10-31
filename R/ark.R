@@ -148,17 +148,23 @@ ark_file <- function(tablename,
 }
 
 
+## Generic way to get header
+get_header <- function(db, tablename){
+  fields <- DBI::dbListFields(db, tablename)
+  names(fields) <- fields
+  as.data.frame(lapply(fields, function(x) character(0)))
+}
+
 keep_open <- function(db_con, streamable_table, lines, p, tablename, con){
   ## Create header to avoid duplicate column names
-  query <- paste("SELECT * FROM", tablename, "LIMIT 0")
-  header <- DBI::dbGetQuery(db_con, query)
+  header <- get_header(db_con, tablename)
   streamable_table$write(header, con, omit_header = FALSE)
   
   ## 
   res <- DBI::dbSendQuery(db_con, paste("SELECT * FROM", tablename))
   while (TRUE) {
     p$tick()
-    data <- dbFetch(res, n = lines)
+    data <- DBI::dbFetch(res, n = lines)
     if (nrow(data) == 0) break
     streamable_table$write(data, con, omit_header = TRUE)
   }
