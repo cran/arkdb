@@ -1,21 +1,15 @@
-library(arkdb)
-#library(dbplyr)
-#library(dplyr)
-#library(nycflights13)
-#library(fs)
-#library(RSQLite)
-#library(MonetDBLite)
+context("basic")
 
 # Setup
-tmp <- tempdir()
-db <- dbplyr::nycflights13_sqlite(tmp)
-dir <- file.path(tmp, "nycflights")
-dir.create(dir, showWarnings = FALSE)
-new_db <- dplyr::src_sqlite(fs::path(tmp, "local.sqlite"), create = TRUE)
+  tmp <- tempdir()
+  db <- dbplyr::nycflights13_sqlite(tmp)
+  dir <- file.path(tmp, "nycflights")
+  dir.create(dir, showWarnings = FALSE)
+  dbdir <- fs::path(tmp, "local.sqlite")
+  new_db <- DBI::dbConnect(RSQLite::SQLite(), dbdir)
 
 ## Note: later tests will overwrite existing tables and files, throwing warnings
 
-testthat::context("basic")
 testthat::test_that("we can ark and unark a db", {
 
   skip_if_not_installed("dplyr")
@@ -62,7 +56,7 @@ testthat::test_that("we can ark and unark a db in plain text", {
   files <- list.files(dir, pattern = "[.]tsv.bz2$", full.names = TRUE)
   testthat::expect_length(files, 5)
  
-  suppressWarnings(
+  suppressWarnings( # ignore overwrite warning
     myflights <- readr::read_tsv(file.path(dir, "flights.tsv.bz2"))
   )
   testthat::expect_equal(dim(myflights), 
@@ -70,8 +64,9 @@ testthat::test_that("we can ark and unark a db in plain text", {
   
   ## unark
   #new_db <- dplyr::src_sqlite(fs::path(tmp, "local.sqlite"), create = TRUE)
-  unark(files, new_db, lines = 50000, overwrite = TRUE)
-  
+  suppressWarnings( # ignore overwrite warning
+    unark(files, new_db, lines = 50000, overwrite = TRUE)
+  )
   myflights <- dplyr::tbl(new_db, "flights")
   testthat::expect_is(myflights, "tbl_dbi")
   
@@ -168,7 +163,9 @@ testthat::test_that("try with MonetDB & alternate method", {
   
 })
 
-## Cleanup 
-DBI::dbDisconnect(db$con)
-DBI::dbDisconnect(new_db$con)
-unlink(dir, TRUE) # ark'd text files
+  ## Cleanup 
+  DBI::dbDisconnect(db$con)
+  DBI::dbDisconnect(new_db)
+  unlink(dir, TRUE) # ark'd text files
+
+

@@ -1,12 +1,24 @@
+# arkdb 0.0.6
 
-# arkdb 0.0.5
+- support vroom as an opt-in streamable table
+- export `process_chunks`
+- Add mechanism to attempt a bulk importer, when available (#27)
+- Bugfix for case when text contains `#` characters in base parser (#28)
+- lighten core dependencies.  Fully recursive dependencies include only 4
+  non-base packages now, as `progress` is now optional.
+- Use "magic numbers" instead of extensions to guess compression type.
+  (NOTE: requires that file is local and not a URL)
+- Now that `duckdb` is on CRAN and `MonetDBLite` isn't, drop built-in
+  support for `MonetDBLite` in favor of `duckdb` alone.
+
+# arkdb 0.0.5 2018-10-31
 
 - `ark()`'s default `keep-open` method would cut off header names for
    Postgres connections (due to variation in the behavior of SQL queries
    with `LIMIT 0`.)  The issue is now resolved by accessing the header in
    a more robust, general way.
 
-# arkdb 0.0.4
+# arkdb 0.0.4 2018-09-27
 
 - `unark()` will strip out non-compliant characters in table names by default.
 - `unark()` gains the optional argument `tablenames`, allowing the user to

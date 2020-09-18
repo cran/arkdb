@@ -52,6 +52,39 @@ assert_streamable <- function(x, name = deparse(substitute(x))) {
   }
 }
 
+
+#' streamable tables using `vroom`
+#' 
+#' @return a `streamable_table` object (S3)
+#' @export
+#' @seealso [readr::read_tsv()], [readr::write_tsv()]
+#' 
+streamable_vroom <- function() {
+  
+  ## Avoids a hard dependency on readr for this courtesy function
+  if (!requireNamespace("vroom", quietly = TRUE)) {
+    stop("vroom package must be installed to use readr-based methods",
+         call. = FALSE)
+  }
+  read_tsv <- getExportedValue("vroom", "vroom")
+  write_tsv <- getExportedValue("vroom", "vroom_write")
+  
+  
+  ## actual definitions
+  read <- function(file, ...) {
+    read_tsv(file, ...)
+  }
+  write <- function(x, path, omit_header = FALSE) {
+    write_tsv(x = x, path = path, append = omit_header)
+  }
+  
+  streamable_table(read, write, "tsv")
+}
+
+
+
+
+
 #' streamable tsv using `readr`
 #' 
 #' @return a `streamable_table` object (S3)
@@ -120,11 +153,12 @@ streamable_readr_csv <- function() {
 #' 
 #' @importFrom utils read.table write.table 
 streamable_base_tsv <- function() {
-  read_tsv <- function(file, ...) {
+  read_tsv <- function(file, comment.char = "", ...) {
     utils::read.table(textConnection(file), 
                       header = TRUE, 
                       sep = "\t", 
                       quote = "",
+                      comment.char = comment.char,
                       stringsAsFactors = FALSE,
                       ...)
   }
@@ -155,12 +189,13 @@ streamable_base_tsv <- function() {
 #' @importFrom utils read.table write.table 
 #' 
 streamable_base_csv <- function() {
-  read_csv <- function(file, ...) {
+  read_csv <- function(file, comment.char = "", ...) {
     ## Consider case of header = FALSE...
     utils::read.table(textConnection(file), 
                       header = TRUE, 
                       sep = ",", 
                       quote = "\"",
+                      comment.char = comment.char,
                       stringsAsFactors = FALSE,
                       ...)
   }
