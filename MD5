@@ -1,7 +1,7 @@
-c93e709a97eb8c5100900dbddbc870ba *DESCRIPTION
+28d1c737e788d0e01d6155ab4b573fb7 *DESCRIPTION
 65d0151f3ccf0ed66271d0452cb9a11e *LICENSE
 c850a3d2e3ffd8e88acc7a194bf06d63 *NAMESPACE
-83dd4cbabc5485f2ac02db190e6503db *NEWS.md
+de521f29110ca775e354cc4a059f890d *NEWS.md
 affca70a35c908f13dff15b5c9bf2a1a *R/ark.R
 d30d1e7960b60627e1ad2dc3a8dabf1c *R/arkdb.R
 858aa53e50858fd41ffce3a92bfa06b4 *R/assert.R
@@ -16,7 +16,7 @@ e5254ee883207a7c9ba15074e13c6b1c *R/streamable_table.R
 0ead5901f9a561208783ebec0e9e81e0 *inst/WORDLIST
 36174129effbff7b1161c2737a783fc3 *inst/doc/arkdb.R
 849d57437e32bd0ad6b571dc1a07279d *inst/doc/arkdb.Rmd
-172727d16d907883ce5b61489d727f40 *inst/doc/arkdb.html
+71a21ab822a97c3e2e35da854f0744fd *inst/doc/arkdb.html
 255ec8d0e0aaac72220e127fd91424a9 *inst/examples/fao.R
 32b6315640437b24d024bf80473c41b8 *inst/examples/monetdblite.R
 10bd19ad61e72b9ba14c6d4f0d26e651 *inst/extdata/mtcars.tsv.gz
@@ -38,9 +38,9 @@ cc369084f52e1bebfe96222fe303018d *man/streamable_readr_tsv.Rd
 3e2df108b5633420a69401649114c930 *tests/testthat.R
 36445434ec5340b8b4d6f8d34f7e3b21 *tests/testthat/setup-test_db.R
 10c6e96afc6d7d1bedfc0a6a44684283 *tests/testthat/teardown-test_db.R
-df3ae05a16ac156282a08a370c0bc5cd *tests/testthat/test-arkdb.R
+4e11bdc4f789d4300c7435533f33360b *tests/testthat/test-arkdb.R
 14bdf40c8713d455d277a6b19033b833 *tests/testthat/test-bulk-import.R
 7b7dead612f88284fdb6bf18adee9a66 *tests/testthat/test-errors.R
-fa578789b8ea60d9be0dc5a29b3937a2 *tests/testthat/test-local_db.R
+5a968ebfb8275106b678ae856e4fd524 *tests/testthat/test-local_db.R
 4999e60219dbd5d260ca38108b842114 *tests/testthat/test-streamable.R
 849d57437e32bd0ad6b571dc1a07279d *vignettes/arkdb.Rmd
