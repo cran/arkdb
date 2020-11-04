@@ -81,7 +81,16 @@ ark(db, dir,
     streamable_table = stream)
 
 ## ----include=FALSE------------------------------------------------------------
-DBI::dbDisconnect(db$con)
+
+disconnect <- function(db){
+  ## Cleanup 
+  if(inherits(db, "DBIConnection")){
+    DBI::dbDisconnect(db)
+  } else {
+    DBI::dbDisconnect(db$con)
+  }
+}
+disconnect(db)
 DBI::dbDisconnect(new_db)
 unlink(dir, TRUE)
 
