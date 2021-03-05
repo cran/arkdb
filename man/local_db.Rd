@@ -6,8 +6,10 @@
 \usage{
 local_db(
   dbdir = arkdb_dir(),
-  driver = Sys.getenv("ARKDB_DRIVER"),
-  readonly = FALSE
+  driver = Sys.getenv("ARKDB_DRIVER", "duckdb"),
+  readonly = FALSE,
+  memory_limit = getOption("duckdb_memory_limit", NA),
+  ...
 )
 }
 \arguments{
@@ -20,9 +22,17 @@ argument or by setting the environmental variable \code{ARKDB_DRIVER}.}
 
 \item{readonly}{Should the database be opened read-only? (duckdb only).
 This allows multiple concurrent connections (e.g. from different R sessions)}
+
+\item{memory_limit}{Set a memory limit for duckdb, in GB.  This can
+also be set for the session by using options, e.g.
+\code{options(duckdb_memory_limit=10)} for a limit of 10GB.  On most systems
+duckdb will automatically set a limit to 80\% of machine capacity if not
+set explicitly.}
+
+\item{...}{additional arguments (not used at this time)}
 }
 \value{
-Returns a \verb{[DBIcoonection]} connection to the default duckdb database
+Returns a \verb{[DBIconnection]} connection to the default database
 }
 \description{
 This function will provide a connection to the best available database.
@@ -42,7 +52,7 @@ Second, this function will cache the database connection in an R environment and
 load that cache.  That means you can call \code{local_db()} as fast/frequently as you
 like without causing errors that would occur by rapid calls to \verb{[DBI::dbConnect]}
 
-Third, this function defaults to persistent storage location set by \verb{[rappdirs::user_data_dir]}
+Third, this function defaults to persistent storage location set by \verb{[tools::R_user_dir]}
 and configurable by setting the environmental variable \code{ARKDB_HOME}.  This allows
 a package to provide persistent storage out-of-the-box, and easily switch that storage
 to a temporary directory (e.g. for testing purposes, or custom user configuration) without
