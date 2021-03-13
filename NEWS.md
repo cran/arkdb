@@ -1,3 +1,10 @@
+# arkdb 0.0.11
+
+- make cached connection opt-out instead of applying only to read_only.  This
+  allows cache to work on read-write connections by default.  This also avoids
+  the condition of a connection being garbage-collected when functions call
+  local_db internally.
+
 # arkdb 0.0.10
 
 - Better handling of read_only vs read_write connections.  Only caches

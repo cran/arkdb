@@ -1,12 +1,12 @@
-1c3be552990dfaade633acb92b7c8b62 *DESCRIPTION
+749d2ca1c2834efb6cc221ad0e85ba06 *DESCRIPTION
 65d0151f3ccf0ed66271d0452cb9a11e *LICENSE
 fc5e31cecf76576133383c8aaa652664 *NAMESPACE
-e8cfd2731e471488213a3eaf61111cb3 *NEWS.md
+b758d1d858c336941f8e352b0b9b0a7f *NEWS.md
 affca70a35c908f13dff15b5c9bf2a1a *R/ark.R
 d30d1e7960b60627e1ad2dc3a8dabf1c *R/arkdb.R
 858aa53e50858fd41ffce3a92bfa06b4 *R/assert.R
 dcc79a1721d44fd0f7a9098970af0fdf *R/bulk_importers.R
-54d981990d75561f87ca0f395a067716 *R/local_db.R
+7361fc3310fc5ccbf061ead6bb8551a7 *R/local_db.R
 cf45284faf969a437751599e3b5918a7 *R/monetdblite.R
 aa70f997fa443c1dd18eeebf4bd0f19b *R/process_chunks.R
 4eed2e66b903efadfa2e118576e77b7a *R/streamable_table.R
@@ -17,7 +17,7 @@ bad25036b16a03387921e60453c41927 *build/vignette.rds
 ca14b3019261fbabd17748bce280a0b7 *inst/WORDLIST
 eb3c5900e7a3bed948fbb87ea13799c3 *inst/doc/arkdb.R
 60181b1c03d769ba98cc0886b12c9ccf *inst/doc/arkdb.Rmd
-4481f619acf07e96c0c1fc623c04c528 *inst/doc/arkdb.html
+89453d13d586f31ba2f04f50b237fdf9 *inst/doc/arkdb.html
 b0bee73088bc30d6824791afb769545b *inst/examples/fao.R
 10bd19ad61e72b9ba14c6d4f0d26e651 *inst/extdata/mtcars.tsv.gz
 e14fc94b9214aeb1105b2de11726874e *man/ark.Rd
@@ -25,7 +25,7 @@ f748367505dd98a488e3922fea3efc86 *man/arkdb-package.Rd
 34d3c68e5130a21ef3c875f25a8f54bf *man/arkdb_delete_db.Rd
 60659615a53f70917fabe81b1277ec39 *man/figures/logo.png
 ff60fc266a7c532780897e1a47be4565 *man/figures/logo.svg
-01d8effbf7ba1daa45d649b68aea09a8 *man/local_db.Rd
+e33161fe8471ca76a70c472ec4ef2731 *man/local_db.Rd
 f1e9da7d9d4d12c7b1a07cac498813eb *man/local_db_disconnect.Rd
 66b43d85d0c734a5d84c872ed72c9c05 *man/process_chunks.Rd
 c37fbc310739fabe6ee2841f27c05168 *man/streamable_base_csv.Rd
