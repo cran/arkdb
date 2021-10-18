@@ -1,7 +1,7 @@
-06b4887403c36e5a7a42f48d1e2c3b60 *DESCRIPTION
+389af0a0de58e8a393dcd5ba7e7a63e6 *DESCRIPTION
 65d0151f3ccf0ed66271d0452cb9a11e *LICENSE
 3be6081b00472768960eae095068c165 *NAMESPACE
-b361cbc7a6c88e9764180811e3721042 *NEWS.md
+d2458f884076507380be354eeb0658d0 *NEWS.md
 14baa0653ad63b8713874c5d68e3ff0f *R/ark.R
 d30d1e7960b60627e1ad2dc3a8dabf1c *R/arkdb.R
 858aa53e50858fd41ffce3a92bfa06b4 *R/assert.R
@@ -17,7 +17,7 @@ cd445713a1623358c1f03198fd4648bb *build/vignette.rds
 ca14b3019261fbabd17748bce280a0b7 *inst/WORDLIST
 eb3c5900e7a3bed948fbb87ea13799c3 *inst/doc/arkdb.R
 60181b1c03d769ba98cc0886b12c9ccf *inst/doc/arkdb.Rmd
-8b3a4b2414b8bc47571de1c307a15c5a *inst/doc/arkdb.html
+73ba0372b86e6300c7f99f6ac544896d *inst/doc/arkdb.html
 b0bee73088bc30d6824791afb769545b *inst/examples/fao.R
 10bd19ad61e72b9ba14c6d4f0d26e651 *inst/extdata/mtcars.tsv.gz
 6fd4d0baa093011fb86b46d7fc1fb5c3 *man/ark.Rd
@@ -40,7 +40,7 @@ facb0b85827cafd5b217ed2fcf2db2b4 *man/unark.Rd
 3e2df108b5633420a69401649114c930 *tests/testthat.R
 9cf8388d6a50d6a04e001fd2c600aded *tests/testthat/setup-test_db.R
 10c6e96afc6d7d1bedfc0a6a44684283 *tests/testthat/teardown-test_db.R
-948fcf416c04123f1f461b723d8ae39d *tests/testthat/test-arkdb.R
+3c579d9ec1490349dbd9ae200340a1c7 *tests/testthat/test-arkdb.R
 84b82a75010864205c6a58cbe54e1611 *tests/testthat/test-bulk-import.R
 7b7dead612f88284fdb6bf18adee9a66 *tests/testthat/test-errors.R
 565b762297a3eebf0c7a000b21780b5d *tests/testthat/test-local_db.R

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Carl Boettiger" />
 
-<meta name="date" content="2021-10-15" />
+<meta name="date" content="2021-10-18" />
 
 <title>Introduction to arkdb</title>
 
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h1 class="title toc-ignore">Introduction to arkdb</h1>
 <h4 class="author">Carl Boettiger</h4>
-<h4 class="date">2021-10-15</h4>
+<h4 class="date">2021-10-18</h4>
 
 
 
@@ -174,7 +174,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>First, we’ll need an example database to work with. Conveniently, there is a nice example using the NYC flights data built into the <code>dbplyr</code> package.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">tempdir</span>() <span class="co"># Or can be your working directory, &quot;.&quot;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>db <span class="ot">&lt;-</span> dbplyr<span class="sc">::</span><span class="fu">nycflights13_sqlite</span>(tmp)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Caching nycflights db at /tmp/RtmpmmOy8E/nycflights13.sqlite</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Caching nycflights db at /tmp/RtmpAxqzNc/nycflights13.sqlite</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating table: airlines</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating table: airports</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating table: flights</span></span>
@@ -184,15 +184,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dir <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_create</span>(fs<span class="sc">::</span><span class="fu">path</span>(tmp, <span class="st">&quot;nycflights&quot;</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ark</span>(db, dir, <span class="at">lines =</span> <span class="dv">50000</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airlines in 50000 line chunks:</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.002976656 secs)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.003219128 secs)</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airports in 50000 line chunks:</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01171994 secs)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01198101 secs)</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting flights in 50000 line chunks:</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 6.432577 secs)</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 6.291728 secs)</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting planes in 50000 line chunks:</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01802444 secs)</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01744914 secs)</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting weather in 50000 line chunks:</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.4603519 secs)</span></span></code></pre></div>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.4442201 secs)</span></span></code></pre></div>
 <p>We can take a look and confirm the files have been written. Note that we can use <code>fs::dir_info</code> to get a nice snapshot of the file sizes. Compare the compressed sizes to the original database:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_info</span>(dir) <span class="sc">%&gt;%</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(path, size) <span class="sc">%&gt;%</span></span>
@@ -217,20 +217,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>new_db <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(RSQLite<span class="sc">::</span><span class="fu">SQLite</span>(), fs<span class="sc">::</span><span class="fu">path</span>(tmp, <span class="st">&quot;local.sqlite&quot;</span>))</span></code></pre></div>
 <p>As with <code>ark</code>, we can set the chunk size to control the memory footprint required:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unark</span>(files, new_db, <span class="at">lines =</span> <span class="dv">50000</span>)  </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpmmOy8E/nycflights/airlines.tsv.bz2 in 50000 line chunks:</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.006159782 secs)</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpmmOy8E/nycflights/airports.tsv.bz2 in 50000 line chunks:</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01144028 secs)</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpmmOy8E/nycflights/flights.tsv.bz2 in 50000 line chunks:</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 3.905908 secs)</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpmmOy8E/nycflights/planes.tsv.bz2 in 50000 line chunks:</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01827621 secs)</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpmmOy8E/nycflights/weather.tsv.bz2 in 50000 line chunks:</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.2304409 secs)</span></span></code></pre></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpAxqzNc/nycflights/airlines.tsv.bz2 in 50000 line chunks:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.006328106 secs)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpAxqzNc/nycflights/airports.tsv.bz2 in 50000 line chunks:</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01160932 secs)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpAxqzNc/nycflights/flights.tsv.bz2 in 50000 line chunks:</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 3.849443 secs)</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpAxqzNc/nycflights/planes.tsv.bz2 in 50000 line chunks:</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01824117 secs)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpAxqzNc/nycflights/weather.tsv.bz2 in 50000 line chunks:</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.235455 secs)</span></span></code></pre></div>
 <p><code>unark</code> returns a <code>dplyr</code> database connection that we can use in the usual way:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tbl</span>(new_db, <span class="st">&quot;flights&quot;</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Source:   table&lt;flights&gt; [?? x 19]</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Database: sqlite 3.36.0 [/tmp/RtmpmmOy8E/local.sqlite]</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Database: sqlite 3.36.0 [/tmp/RtmpAxqzNc/local.sqlite]</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;int&gt;    &lt;int&gt;          &lt;int&gt;</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  2013     1     1      517            515         2      830            819</span></span>
@@ -260,30 +260,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ark</span>(db, dir, </span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">streamable_table =</span> <span class="fu">streamable_base_csv</span>())</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airlines in 50000 line chunks:</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.001417875 secs)</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.001421213 secs)</span></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airports in 50000 line chunks:</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01183343 secs)</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01159668 secs)</span></span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting flights in 50000 line chunks:</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 6.78172 secs)</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 6.758133 secs)</span></span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting planes in 50000 line chunks:</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.0189321 secs)</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01859593 secs)</span></span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting weather in 50000 line chunks:</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.4512117 secs)</span></span></code></pre></div>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.4440098 secs)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(dir, <span class="at">glob =</span> <span class="st">&quot;*.csv.bz2&quot;</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>new_db <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(RSQLite<span class="sc">::</span><span class="fu">SQLite</span>(), fs<span class="sc">::</span><span class="fu">path</span>(tmp, <span class="st">&quot;local.sqlite&quot;</span>))</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unark</span>(files, new_db,</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">streamable_table =</span> <span class="fu">streamable_base_csv</span>())</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpmmOy8E/nycflights/airlines.csv.bz2 in 50000 line chunks:</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.005329132 secs)</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpmmOy8E/nycflights/airports.csv.bz2 in 50000 line chunks:</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01134968 secs)</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpmmOy8E/nycflights/flights.csv.bz2 in 50000 line chunks:</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 3.88021 secs)</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpmmOy8E/nycflights/planes.csv.bz2 in 50000 line chunks:</span></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.0177722 secs)</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpmmOy8E/nycflights/weather.csv.bz2 in 50000 line chunks:</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.1263437 secs)</span></span></code></pre></div>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpAxqzNc/nycflights/airlines.csv.bz2 in 50000 line chunks:</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.005446434 secs)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpAxqzNc/nycflights/airports.csv.bz2 in 50000 line chunks:</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01166534 secs)</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpAxqzNc/nycflights/flights.csv.bz2 in 50000 line chunks:</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 3.938871 secs)</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpAxqzNc/nycflights/planes.csv.bz2 in 50000 line chunks:</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01798415 secs)</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpAxqzNc/nycflights/weather.csv.bz2 in 50000 line chunks:</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.127007 secs)</span></span></code></pre></div>
 <p><code>arkdb</code> also provides the function <code>streamable_table()</code> to facilitate users creating their own streaming table interfaces. For instance, if you would prefer to use <code>readr</code> methods to read and write <code>tsv</code> files, we could construct the table as follows (<code>streamable_readr_tsv()</code> and <code>streamable_readr_csv()</code> are also shipped inside <code>arkdb</code> for convenience):</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>stream <span class="ot">&lt;-</span> </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">streamable_table</span>(</span>
@@ -299,15 +299,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Please use the `file` argument instead.</span></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; This warning is displayed once every 8 hours.</span></span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.1878223 secs)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.1925809 secs)</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airports in 50000 line chunks:</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.08757019 secs)</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.0682373 secs)</span></span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting flights in 50000 line chunks:</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 10.26018 secs)</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 3.584641 secs)</span></span>
 <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting planes in 50000 line chunks:</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.2028964 secs)</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.1657887 secs)</span></span>
 <span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting weather in 50000 line chunks:</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 1.010007 secs)</span></span></code></pre></div>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.2941976 secs)</span></span></code></pre></div>
 <p>Note several constraints on this design. The write method must be able to take a generic R <code>connection</code> object (which will allow it to handle the compression methods used, if any), and the read method must be able to take a <code>textConnection</code> object. <code>readr</code> functions handle these cases out of the box, so the above method is easy to write. Also note that the write method must be able to <code>append</code>, i.e. it should use a header if <code>append=TRUE</code>, but omit when it is <code>FALSE</code>. See the built-in methods for more examples.</p>
 </div>
 <div id="a-note-on-compression" class="section level2">
