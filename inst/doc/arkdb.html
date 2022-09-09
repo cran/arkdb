@@ -12,11 +12,23 @@
 
 <meta name="author" content="Carl Boettiger" />
 
-<meta name="date" content="2022-02-14" />
+<meta name="date" content="2022-09-09" />
 
 <title>Introduction to arkdb</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -26,6 +38,7 @@
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   ul.task-list{list-style: none;}
     </style>
+
 
 
 <style type="text/css">
@@ -109,13 +122,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -127,7 +147,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -141,7 +341,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h1 class="title toc-ignore">Introduction to arkdb</h1>
 <h4 class="author">Carl Boettiger</h4>
-<h4 class="date">2022-02-14</h4>
+<h4 class="date">2022-09-09</h4>
 
 
 
@@ -149,9 +349,49 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1>arkdb</h1>
 <div id="package-rationale" class="section level2">
 <h2>Package rationale</h2>
-<p>Increasing data sizes create challenges for the fundamental tasks of publishing, distributing, and preserving data. Despite (or perhaps because of) the diverse and ever-expanding number of database and file formats, the humble plain text file such as comma or tab-separated-values (e.g. <code>.csv</code> or <code>.tsv</code> files) remains the gold standard for data archiving and distribution. These files can read on almost any platform or tool and can be efficiently compressed using long-standing and widely available standard open source libraries like <code>gzip</code> or <code>bzip2</code>. In contrast, database storage formats and dumps are usually particular to the database platform used to generate them, and will likely not be compatible between different database engines (e.g. PostgreSQL -&gt; SQLite) or even between different versions of the same engine. Researchers unfamiliar with these databases will have difficulty accessing such data, and these dumps may also be in formats that are less efficient to compress.</p>
-<p>Working with tables that are too large for working memory on most machines by using external relational database stores is now a common R practice, thanks to ever-rising availability of data and increasing support and popularity of packages such as <code>DBI</code>, <code>dplyr</code>, and <code>dbplyr</code>. Working with plain text files becomes increasingly difficult in this context. Many R users will not have sufficient RAM to simply read in a 10 GB <code>.tsv</code> file into R. Similarly, moving a 10 GB database out of a relational data file and into a plain text file for archiving and distribution is similarly challenging from R. While most relational database back-ends implement some form of <code>COPY</code> or <code>IMPORT</code> that allows them to read in and export out plain text files directly, these methods are not consistent across database types and not part of the standard SQL interface. Most importantly for our case, they also cannot be called directly from R, but require a separate stand-alone installation of the database client. <code>arkdb</code> provides a simple solution to these two tasks.</p>
-<p>The goal of <code>arkdb</code> is to provide a convenient way to move data from large compressed text files (e.g. <code>*.tsv.bz2</code>) into any DBI-compliant database connection (see <a href="https://db.rstudio.com/dbi/">DBI</a>), and move tables out of such databases into text files. The key feature of <code>arkdb</code> is that files are moved between databases and text files in chunks of a fixed size, allowing the package functions to work with tables that would be much to large to read into memory all at once. This will be slower than reading the file into memory at one go, but can be scaled to larger data and larger data with no additional memory requirement.</p>
+<p>Increasing data sizes create challenges for the fundamental tasks of
+publishing, distributing, and preserving data. Despite (or perhaps
+because of) the diverse and ever-expanding number of database and file
+formats, the humble plain text file such as comma or
+tab-separated-values (e.g. <code>.csv</code> or <code>.tsv</code> files)
+remains the gold standard for data archiving and distribution. These
+files can read on almost any platform or tool and can be efficiently
+compressed using long-standing and widely available standard open source
+libraries like <code>gzip</code> or <code>bzip2</code>. In contrast,
+database storage formats and dumps are usually particular to the
+database platform used to generate them, and will likely not be
+compatible between different database engines (e.g. PostgreSQL -&gt;
+SQLite) or even between different versions of the same engine.
+Researchers unfamiliar with these databases will have difficulty
+accessing such data, and these dumps may also be in formats that are
+less efficient to compress.</p>
+<p>Working with tables that are too large for working memory on most
+machines by using external relational database stores is now a common R
+practice, thanks to ever-rising availability of data and increasing
+support and popularity of packages such as <code>DBI</code>,
+<code>dplyr</code>, and <code>dbplyr</code>. Working with plain text
+files becomes increasingly difficult in this context. Many R users will
+not have sufficient RAM to simply read in a 10 GB <code>.tsv</code> file
+into R. Similarly, moving a 10 GB database out of a relational data file
+and into a plain text file for archiving and distribution is similarly
+challenging from R. While most relational database back-ends implement
+some form of <code>COPY</code> or <code>IMPORT</code> that allows them
+to read in and export out plain text files directly, these methods are
+not consistent across database types and not part of the standard SQL
+interface. Most importantly for our case, they also cannot be called
+directly from R, but require a separate stand-alone installation of the
+database client. <code>arkdb</code> provides a simple solution to these
+two tasks.</p>
+<p>The goal of <code>arkdb</code> is to provide a convenient way to move
+data from large compressed text files (e.g. <code>*.tsv.bz2</code>) into
+any DBI-compliant database connection (see <a href="https://solutions.rstudio.com/db/r-packages/DBI/">DBI</a>), and
+move tables out of such databases into text files. The key feature of
+<code>arkdb</code> is that files are moved between databases and text
+files in chunks of a fixed size, allowing the package functions to work
+with tables that would be much to large to read into memory all at once.
+This will be slower than reading the file into memory at one go, but can
+be scaled to larger data and larger data with no additional memory
+requirement.</p>
 </div>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
@@ -171,29 +411,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fs)</span></code></pre></div>
 <div id="creating-an-archive-of-an-existing-database" class="section level2">
 <h2>Creating an archive of an existing database</h2>
-<p>First, we’ll need an example database to work with. Conveniently, there is a nice example using the NYC flights data built into the <code>dbplyr</code> package.</p>
+<p>First, we’ll need an example database to work with. Conveniently,
+there is a nice example using the NYC flights data built into the
+<code>dbplyr</code> package.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">tempdir</span>() <span class="co"># Or can be your working directory, &quot;.&quot;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>db <span class="ot">&lt;-</span> dbplyr<span class="sc">::</span><span class="fu">nycflights13_sqlite</span>(tmp)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Caching nycflights db at /tmp/RtmpH1NR3d/nycflights13.sqlite</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Caching nycflights db at /tmp/RtmprvRBZA/nycflights13.sqlite</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating table: airlines</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating table: airports</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating table: flights</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating table: planes</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating table: weather</span></span></code></pre></div>
-<p>To create an archive, we just give <code>ark</code> the connection to the database and tell it where we want the <code>*.tsv.bz2</code> files to be archived. We can also set the chunk size as the number of <code>lines</code> read in a single chunk. More lines per chunk usually means faster run time at the cost of higher memory requirements.</p>
+<p>To create an archive, we just give <code>ark</code> the connection to
+the database and tell it where we want the <code>*.tsv.bz2</code> files
+to be archived. We can also set the chunk size as the number of
+<code>lines</code> read in a single chunk. More lines per chunk usually
+means faster run time at the cost of higher memory requirements.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dir <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_create</span>(fs<span class="sc">::</span><span class="fu">path</span>(tmp, <span class="st">&quot;nycflights&quot;</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ark</span>(db, dir, <span class="at">lines =</span> <span class="dv">50000</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airlines in 50000 line chunks:</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.004504681 secs)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.005733728 secs)</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airports in 50000 line chunks:</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01823521 secs)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.02214575 secs)</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting flights in 50000 line chunks:</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 10.57685 secs)</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 11.58494 secs)</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting planes in 50000 line chunks:</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.03616881 secs)</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.03425121 secs)</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting weather in 50000 line chunks:</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.8809209 secs)</span></span></code></pre></div>
-<p>We can take a look and confirm the files have been written. Note that we can use <code>fs::dir_info</code> to get a nice snapshot of the file sizes. Compare the compressed sizes to the original database:</p>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.8125103 secs)</span></span></code></pre></div>
+<p>We can take a look and confirm the files have been written. Note that
+we can use <code>fs::dir_info</code> to get a nice snapshot of the file
+sizes. Compare the compressed sizes to the original database:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_info</span>(dir) <span class="sc">%&gt;%</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(path, size) <span class="sc">%&gt;%</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">path =</span> fs<span class="sc">::</span><span class="fu">path_file</span>(path))</span>
@@ -212,40 +460,48 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="unarchive" class="section level2">
 <h2>Unarchive</h2>
-<p>Now that we’ve gotten all the database into (compressed) plain text files, let’s get them back out. We simply need to pass <code>unark</code> a list of these compressed files and a connection to the database. Here we create a new local SQLite database. Note that this design means that it is also easy to use <code>arkdb</code> to move data between databases.</p>
+<p>Now that we’ve gotten all the database into (compressed) plain text
+files, let’s get them back out. We simply need to pass
+<code>unark</code> a list of these compressed files and a connection to
+the database. Here we create a new local SQLite database. Note that this
+design means that it is also easy to use <code>arkdb</code> to move data
+between databases.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(dir, <span class="at">glob =</span> <span class="st">&quot;*.tsv.bz2&quot;</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>new_db <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(RSQLite<span class="sc">::</span><span class="fu">SQLite</span>(), fs<span class="sc">::</span><span class="fu">path</span>(tmp, <span class="st">&quot;local.sqlite&quot;</span>))</span></code></pre></div>
-<p>As with <code>ark</code>, we can set the chunk size to control the memory footprint required:</p>
+<p>As with <code>ark</code>, we can set the chunk size to control the
+memory footprint required:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unark</span>(files, new_db, <span class="at">lines =</span> <span class="dv">50000</span>)  </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpH1NR3d/nycflights/airlines.tsv.bz2 in 50000 line chunks:</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01277733 secs)</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpH1NR3d/nycflights/airports.tsv.bz2 in 50000 line chunks:</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.02310681 secs)</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpH1NR3d/nycflights/flights.tsv.bz2 in 50000 line chunks:</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 7.23968 secs)</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpH1NR3d/nycflights/planes.tsv.bz2 in 50000 line chunks:</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.03487492 secs)</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpH1NR3d/nycflights/weather.tsv.bz2 in 50000 line chunks:</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.2881908 secs)</span></span></code></pre></div>
-<p><code>unark</code> returns a <code>dplyr</code> database connection that we can use in the usual way:</p>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmprvRBZA/nycflights/airlines.tsv.bz2 in 50000 line chunks:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01300859 secs)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmprvRBZA/nycflights/airports.tsv.bz2 in 50000 line chunks:</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.0248282 secs)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmprvRBZA/nycflights/flights.tsv.bz2 in 50000 line chunks:</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 7.062179 secs)</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmprvRBZA/nycflights/planes.tsv.bz2 in 50000 line chunks:</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.03685236 secs)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmprvRBZA/nycflights/weather.tsv.bz2 in 50000 line chunks:</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.2872906 secs)</span></span></code></pre></div>
+<p><code>unark</code> returns a <code>dplyr</code> database connection
+that we can use in the usual way:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tbl</span>(new_db, <span class="st">&quot;flights&quot;</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Source:   table&lt;flights&gt; [?? x 19]</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Database: sqlite 3.37.0 [/tmp/RtmpH1NR3d/local.sqlite]</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;int&gt;    &lt;int&gt;          &lt;int&gt;</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  2013     1     1      517            515         2      830            819</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  2013     1     1      533            529         4      850            830</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  2013     1     1      542            540         2      923            850</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  2013     1     1      544            545        -1     1004           1022</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  2013     1     1      554            600        -6      812            837</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  2013     1     1      554            558        -4      740            728</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  2013     1     1      555            600        -5      913            854</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  2013     1     1      557            600        -3      709            723</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  2013     1     1      557            600        -3      838            846</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  2013     1     1      558            600        -2      753            745</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with more rows, and 11 more variables: arr_delay &lt;int&gt;, carrier &lt;chr&gt;,</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   flight &lt;int&gt;, tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;int&gt;,</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   distance &lt;int&gt;, hour &lt;int&gt;, minute &lt;int&gt;, time_hour &lt;dbl&gt;</span></span></code></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Database: sqlite 3.39.2 [/tmp/RtmprvRBZA/local.sqlite]</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     year month   day dep_time sched_de…¹ dep_d…² arr_t…³ sched…⁴ arr_d…⁵ carrier</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;      &lt;int&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;  </span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  2013     1     1      517        515       2     830     819      11 UA     </span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  2013     1     1      533        529       4     850     830      20 UA     </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  2013     1     1      542        540       2     923     850      33 AA     </span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  2013     1     1      544        545      -1    1004    1022     -18 B6     </span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  2013     1     1      554        600      -6     812     837     -25 DL     </span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  2013     1     1      554        558      -4     740     728      12 UA     </span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  2013     1     1      555        600      -5     913     854      19 B6     </span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  2013     1     1      557        600      -3     709     723     -14 EV     </span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  2013     1     1      557        600      -3     838     846      -8 B6     </span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  2013     1     1      558        600      -2     753     745       8 AA     </span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with more rows, 9 more variables: flight &lt;int&gt;, tailnum &lt;chr&gt;,</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;int&gt;, distance &lt;int&gt;, hour &lt;int&gt;,</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   minute &lt;int&gt;, time_hour &lt;dbl&gt;, and abbreviated variable names</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   ¹​sched_dep_time, ²​dep_delay, ³​arr_time, ⁴​sched_arr_time, ⁵​arr_delay</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove example files we created.</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbDisconnect</span>(new_db)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(dir, <span class="cn">TRUE</span>)</span>
@@ -253,45 +509,63 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="pluggable-text-formats" class="section level2">
 <h2>Pluggable text formats</h2>
-<p>By default, <code>arkdb</code> uses <code>tsv</code> format, implemented in base tools, as the text-based serialization. The <code>tsv</code> standard is particularly attractive because it side-steps some of the ambiguities present in the CSV format due to string quoting. The <a href="https://www.iana.org/assignments/media-types/text/tab-separated-values">IANA Standard for TSV</a> neatly avoids this for tab-separated values by insisting that a tab can only ever be a separator.</p>
-<p><code>arkdb</code> provides a pluggable mechanism for changing the back end utility used to write text files. For instance, if we need to read in or export in <code>.csv</code> format, we can simply swap in a <code>csv</code> based reader in both <code>ark()</code> and <code>unark()</code> methods, as illustrated here:</p>
+<p>By default, <code>arkdb</code> uses <code>tsv</code> format,
+implemented in base tools, as the text-based serialization. The
+<code>tsv</code> standard is particularly attractive because it
+side-steps some of the ambiguities present in the CSV format due to
+string quoting. The <a href="https://www.iana.org/assignments/media-types/text/tab-separated-values">IANA
+Standard for TSV</a> neatly avoids this for tab-separated values by
+insisting that a tab can only ever be a separator.</p>
+<p><code>arkdb</code> provides a pluggable mechanism for changing the
+back end utility used to write text files. For instance, if we need to
+read in or export in <code>.csv</code> format, we can simply swap in a
+<code>csv</code> based reader in both <code>ark()</code> and
+<code>unark()</code> methods, as illustrated here:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dir <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_create</span>(fs<span class="sc">::</span><span class="fu">path</span>(tmp, <span class="st">&quot;nycflights&quot;</span>))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ark</span>(db, dir, </span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">streamable_table =</span> <span class="fu">streamable_base_csv</span>())</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airlines in 50000 line chunks:</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.002615929 secs)</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.002629519 secs)</span></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airports in 50000 line chunks:</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.02297091 secs)</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.02165794 secs)</span></span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting flights in 50000 line chunks:</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 13.05323 secs)</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 11.91255 secs)</span></span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting planes in 50000 line chunks:</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.03677654 secs)</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.03511453 secs)</span></span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting weather in 50000 line chunks:</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.8859999 secs)</span></span></code></pre></div>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.8139863 secs)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(dir, <span class="at">glob =</span> <span class="st">&quot;*.csv.bz2&quot;</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>new_db <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(RSQLite<span class="sc">::</span><span class="fu">SQLite</span>(), fs<span class="sc">::</span><span class="fu">path</span>(tmp, <span class="st">&quot;local.sqlite&quot;</span>))</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unark</span>(files, new_db,</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">streamable_table =</span> <span class="fu">streamable_base_csv</span>())</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpH1NR3d/nycflights/airlines.csv.bz2 in 50000 line chunks:</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01166582 secs)</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpH1NR3d/nycflights/airports.csv.bz2 in 50000 line chunks:</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.02440929 secs)</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpH1NR3d/nycflights/flights.csv.bz2 in 50000 line chunks:</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 7.511088 secs)</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpH1NR3d/nycflights/planes.csv.bz2 in 50000 line chunks:</span></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.04013038 secs)</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmpH1NR3d/nycflights/weather.csv.bz2 in 50000 line chunks:</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.3298368 secs)</span></span></code></pre></div>
-<p><code>arkdb</code> also provides the function <code>streamable_table()</code> to facilitate users creating their own streaming table interfaces. For instance, if you would prefer to use <code>readr</code> methods to read and write <code>tsv</code> files, we could construct the table as follows (<code>streamable_readr_tsv()</code> and <code>streamable_readr_csv()</code> are also shipped inside <code>arkdb</code> for convenience):</p>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmprvRBZA/nycflights/airlines.csv.bz2 in 50000 line chunks:</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.01167679 secs)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmprvRBZA/nycflights/airports.csv.bz2 in 50000 line chunks:</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.02331042 secs)</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmprvRBZA/nycflights/flights.csv.bz2 in 50000 line chunks:</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 6.972731 secs)</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmprvRBZA/nycflights/planes.csv.bz2 in 50000 line chunks:</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.03452229 secs)</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Importing /tmp/RtmprvRBZA/nycflights/weather.csv.bz2 in 50000 line chunks:</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.2467248 secs)</span></span></code></pre></div>
+<p><code>arkdb</code> also provides the function
+<code>streamable_table()</code> to facilitate users creating their own
+streaming table interfaces. For instance, if you would prefer to use
+<code>readr</code> methods to read and write <code>tsv</code> files, we
+could construct the table as follows
+(<code>streamable_readr_tsv()</code> and
+<code>streamable_readr_csv()</code> are also shipped inside
+<code>arkdb</code> for convenience):</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>stream <span class="ot">&lt;-</span> </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">streamable_table</span>(</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>     <span class="cf">function</span>(file, ...) readr<span class="sc">::</span><span class="fu">read_tsv</span>(file, ...),</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>     <span class="cf">function</span>(x, path, omit_header)</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>       readr<span class="sc">::</span><span class="fu">write_tsv</span>(<span class="at">x =</span> x, <span class="at">path =</span> path, <span class="at">append =</span> omit_header),</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>     <span class="st">&quot;tsv&quot;</span>)</span></code></pre></div>
-<p>and we can then pass such a streamable table directly to <code>ark()</code> and <code>unark()</code>, like so:</p>
+<p>and we can then pass such a streamable table directly to
+<code>ark()</code> and <code>unark()</code>, like so:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ark</span>(db, dir, </span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">streamable_table =</span> stream)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airlines in 50000 line chunks:</span></span>
@@ -299,24 +573,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Please use the `file` argument instead.</span></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; This warning is displayed once every 8 hours.</span></span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.2126067 secs)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.2044837 secs)</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting airports in 50000 line chunks:</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.1172004 secs)</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.1108453 secs)</span></span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting flights in 50000 line chunks:</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 7.253354 secs)</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 5.929451 secs)</span></span>
 <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting planes in 50000 line chunks:</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.2520444 secs)</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.1820724 secs)</span></span>
 <span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Exporting weather in 50000 line chunks:</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.5893607 secs)</span></span></code></pre></div>
-<p>Note several constraints on this design. The write method must be able to take a generic R <code>connection</code> object (which will allow it to handle the compression methods used, if any), and the read method must be able to take a <code>textConnection</code> object. <code>readr</code> functions handle these cases out of the box, so the above method is easy to write. Also note that the write method must be able to <code>append</code>, i.e. it should use a header if <code>append=TRUE</code>, but omit when it is <code>FALSE</code>. See the built-in methods for more examples.</p>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  ...Done! (in 0.4518864 secs)</span></span></code></pre></div>
+<p>Note several constraints on this design. The write method must be
+able to take a generic R <code>connection</code> object (which will
+allow it to handle the compression methods used, if any), and the read
+method must be able to take a <code>textConnection</code> object.
+<code>readr</code> functions handle these cases out of the box, so the
+above method is easy to write. Also note that the write method must be
+able to <code>append</code>, i.e. it should use a header if
+<code>append=TRUE</code>, but omit when it is <code>FALSE</code>. See
+the built-in methods for more examples.</p>
 </div>
 <div id="a-note-on-compression" class="section level2">
 <h2>A note on compression</h2>
-<p><code>unark</code> can read from a variety of compression formats recognized by base R: <code>bzip2</code>, <code>gzip</code>, <code>zip</code>, and <code>xz</code>, and <code>ark</code> can choose any of these as the compression algorithm. Note that there is some trade-off between speed of compression and efficiency (i.e. the final file size). <code>ark</code> uses the <code>bz2</code> compression algorithm by default, supported in base R, to compress <code>tsv</code> files. The <code>bz2</code> offers excellent compression levels, but is considerably slower to compress than <code>gzip</code> or <code>zip</code>. It is comparably fast to uncompress. For faster archiving when maximum file size reduction is not critical, <code>gzip</code> will give nearly as effective compression in significantly less time. Compression can also be turned off, e.g. by using <code>ark()</code> with <code>compress=&quot;none&quot;</code> and <code>unark()</code> with files that have no compression suffix (e.g. <code>*.tsv</code> instead of <code>*.tsv.gz</code>).</p>
+<p><code>unark</code> can read from a variety of compression formats
+recognized by base R: <code>bzip2</code>, <code>gzip</code>,
+<code>zip</code>, and <code>xz</code>, and <code>ark</code> can choose
+any of these as the compression algorithm. Note that there is some
+trade-off between speed of compression and efficiency (i.e. the final
+file size). <code>ark</code> uses the <code>bz2</code> compression
+algorithm by default, supported in base R, to compress <code>tsv</code>
+files. The <code>bz2</code> offers excellent compression levels, but is
+considerably slower to compress than <code>gzip</code> or
+<code>zip</code>. It is comparably fast to uncompress. For faster
+archiving when maximum file size reduction is not critical,
+<code>gzip</code> will give nearly as effective compression in
+significantly less time. Compression can also be turned off, e.g. by
+using <code>ark()</code> with <code>compress=&quot;none&quot;</code> and
+<code>unark()</code> with files that have no compression suffix
+(e.g. <code>*.tsv</code> instead of <code>*.tsv.gz</code>).</p>
 </div>
 <div id="distributing-data" class="section level2">
 <h2>Distributing data</h2>
-<p>Once you have archived your database files with <code>ark</code>, consider sharing them privately or publicly as part of your project GitHub repo using the <a href="https://github.com/ropensci/piggyback"><code>piggyback</code> R package</a>. For more permanent, versioned, and citable data archiving, upload your <code>*.tsv.bz2</code> files to a data repository like <a href="https://zenodo.org">Zenodo.org</a>.</p>
+<p>Once you have archived your database files with <code>ark</code>,
+consider sharing them privately or publicly as part of your project
+GitHub repo using the <a href="https://github.com/ropensci/piggyback"><code>piggyback</code> R
+package</a>. For more permanent, versioned, and citable data archiving,
+upload your <code>*.tsv.bz2</code> files to a data repository like <a href="https://zenodo.org">Zenodo.org</a>.</p>
 </div>
 </div>
 
