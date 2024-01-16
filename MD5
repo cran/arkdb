@@ -1,7 +1,7 @@
-f650e08fb95fa60db105e1dc920a7ff2 *DESCRIPTION
+0f6a745151f840badeba5f65ee548a78 *DESCRIPTION
 65d0151f3ccf0ed66271d0452cb9a11e *LICENSE
 3be6081b00472768960eae095068c165 *NAMESPACE
-20a3bb7f1c723a8eba156a8d50196453 *NEWS.md
+963b66a2ecc121661fc8d42a51bac776 *NEWS.md
 aa86cc35b3369a45c1b97e3f50755f0e *R/ark.R
 a4a00ead84519d345f5a0248f48a3a6b *R/arkdb.R
 c11b2c5e710a997a14b4fd1c393367c8 *R/assert.R
@@ -12,11 +12,11 @@ b5f7411e307638849b27c7e307d6b4f6 *R/process_chunks.R
 4c9ee016a34897a931864be4e62ff9d1 *R/unark.R
 85d6867077ff36d386ef4e4008991229 *R/utils.R
 de49a4f043581e14a859836d30273ed0 *README.md
-241e852462a0b2aae5a5a151a32d3288 *build/vignette.rds
+92953ef5642c0af740066a781e4fabf0 *build/vignette.rds
 430a302e03ac5fda58a8801ad1d2351d *inst/WORDLIST
 eb3c5900e7a3bed948fbb87ea13799c3 *inst/doc/arkdb.R
 8720ef0c6896af9dd89e4fbd82ae9110 *inst/doc/arkdb.Rmd
-09a6a28aaa58e914f996b602a6626654 *inst/doc/arkdb.html
+ec56c40c4dccbc34f2d42ec20d51a9a4 *inst/doc/arkdb.html
 b0bee73088bc30d6824791afb769545b *inst/examples/fao.R
 b7a4fa8c0b82bcf0bec58fc260789458 *inst/examples/monetdblite.R
 10bd19ad61e72b9ba14c6d4f0d26e651 *inst/extdata/mtcars.tsv.gz
@@ -40,7 +40,7 @@ adf5aa5fa2c4929ec869611f3f6593ba *man/unark.Rd
 4c0eeaa43b5d20471980a55a8d8c0e5d *tests/testthat.R
 58ad02419c4e2f31b61466cae816200d *tests/testthat/setup-test_db.R
 10c6e96afc6d7d1bedfc0a6a44684283 *tests/testthat/teardown-test_db.R
-5df68c15598535d593f2b18e5e971173 *tests/testthat/test-arkdb.R
+c2c15991e52e081596c5f341420dca4a *tests/testthat/test-arkdb.R
 026d0c33312c4aba49e7362e7f467887 *tests/testthat/test-bulk-import.R
 c28fee353318bd9fd84fece69e690e8a *tests/testthat/test-errors.R
 8f2e2688ba2ccd7eebcc8bccf768a155 *tests/testthat/test-local_db.R
